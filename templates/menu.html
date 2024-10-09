@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoboBarista</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        .menu-item {
+            margin: 20px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>RoboBarista</h1>
+
+    <!-- 모든 레시피 이름을 가져와서 버튼으로 표시 -->
+    {% for recipe in recipes %}
+    <div class="menu-item">
+        <button onclick="orderCoffee('{{ recipe.recipe_name }}')">{{ recipe.recipe_name }}</button>
+    </div>
+    {% endfor %}
+
+    <script>
+        function orderCoffee(coffeeType) {
+            fetch('/order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    coffee_type: coffeeType,
+                    size: 'large',  // 기본 설정값
+                    extras: []  // 기본 설정값
+                })
+            })
+            .then(response => response.json())
+            .then(data => alert('Order received: ' + data.order.recipe_name))
+            .catch(error => alert('Error: ' + error));
+        }
+    </script>
+</body>
+</html>
